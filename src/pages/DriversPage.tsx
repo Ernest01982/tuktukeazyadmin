@@ -210,7 +210,7 @@ export const DriversPage: React.FC = () => {
             )}
           </CardContent>
         </Card>
-        <AddDriverModal open={open} onClose={() => setOpen(false)} onCreated={onCreated} />
+        <AddDriverModal isOpen={open} onClose={() => setOpen(false)} onCreated={onCreated} />
       </div>
     </Layout>
   );
