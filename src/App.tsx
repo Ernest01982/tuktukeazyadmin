@@ -4,6 +4,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { DriversPage } from './pages/DriversPage';
+import { RidesPage } from './pages/RidesPage';
+import { SettingsPage } from './pages/SettingsPage';
 import { TransactionsPage } from './pages/Bookkeeping/TransactionsPage';
 import { AccountsPage } from './pages/Bookkeeping/AccountsPage';
 import { PayoutsPage } from './pages/Bookkeeping/PayoutsPage';
@@ -16,6 +18,8 @@ export default function App() {
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage/></ProtectedRoute>} />
       <Route path="/drivers" element={<ProtectedRoute><DriversPage/></ProtectedRoute>} />
+      <Route path="/rides" element={<ProtectedRoute><RidesPage/></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><SettingsPage/></ProtectedRoute>} />
       <Route path="/bookkeeping/transactions" element={<ProtectedRoute><TransactionsPage/></ProtectedRoute>} />
       <Route path="/bookkeeping/accounts" element={<ProtectedRoute><AccountsPage/></ProtectedRoute>} />
       <Route path="/bookkeeping/payouts" element={<ProtectedRoute><PayoutsPage/></ProtectedRoute>} />

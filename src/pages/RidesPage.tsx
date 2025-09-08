@@ -10,7 +10,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '.
 import { StatusChip } from '../components/ui/StatusChip';
 import { RideDetailDrawer } from './RideDetailDrawer';
 import { formatCurrency, formatDateTime, truncateText } from '../lib/fmt';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, MapPin, Clock, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { Ride, Driver, Profile } from '../lib/types';
 
@@ -38,6 +38,15 @@ export const RidesPage: React.FC = () => {
   const pageSize = 20;
 
   const queryClient = useQueryClient();
+
+  // Summary statistics
+  const summaryData = React.useMemo(() => {
+    if (!ridesData) return null;
+    const requested = ridesData.rides.filter(r => r.status === 'REQUESTED').length;
+    const unassigned = ridesData.rides.filter(r => !r.driver_id).length;
+    const active = ridesData.rides.filter(r => ['ASSIGNED', 'ENROUTE', 'STARTED'].includes(r.status)).length;
+    return { requested, unassigned, active };
+  }, [ridesData]);
 
   const { data: ridesData, isLoading } = useQuery({
     queryKey: ['rides', searchTerm, statusFilter, unassignedOnly, currentPage],
@@ -157,6 +166,57 @@ export const RidesPage: React.FC = () => {
   return (
     <Layout title="Rides">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Summary Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Requested Rides</p>
+                  <p className="text-2xl font-bold text-ink mt-1">
+                    {summaryData?.requested ?? '...'}
+                  </p>
+                </div>
+                <div className="p-3 rounded-full bg-yellow-100">
+                  <Clock className="w-6 h-6 text-yellow-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Unassigned Rides</p>
+                  <p className="text-2xl font-bold text-ink mt-1">
+                    {summaryData?.unassigned ?? '...'}
+                  </p>
+                </div>
+                <div className="p-3 rounded-full bg-red-100">
+                  <Users className="w-6 h-6 text-red-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Active Rides</p>
+                  <p className="text-2xl font-bold text-ink mt-1">
+                    {summaryData?.active ?? '...'}
+                  </p>
+                </div>
+                <div className="p-3 rounded-full bg-primary/10">
+                  <MapPin className="w-6 h-6 text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card>
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
