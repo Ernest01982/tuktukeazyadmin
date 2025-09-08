@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
 
     // Attach role + driver row
     console.log("Calling admin_create_driver RPC...");
-    const { error: rpcErr } = await adminClient.rpc("admin_create_driver", {
+    const { data: rpcData, error: rpcErr } = await adminClient.rpc("admin_create_driver", {
       p_email: String(email).toLowerCase(),
       p_name: name,
       p_phone: phone,
@@ -153,10 +153,22 @@ Deno.serve(async (req) => {
     
     console.log("RPC call result:");
     console.log("- Error:", rpcErr?.message || "None");
+    console.log("- Data:", rpcData || "None");
     
     if (rpcErr) {
       console.error("admin_create_driver RPC failed:", rpcErr.message);
-      return json({ error: `admin_create_driver failed: ${rpcErr.message}` }, 500);
+      // Check if it's a "function does not exist" error
+      if (rpcErr.message?.includes("function") && rpcErr.message?.includes("does not exist")) {
+        console.error("RPC function admin_create_driver does not exist in database");
+        return json({ 
+          error: "Database function 'admin_create_driver' not found. Please ensure the RPC function is created in your Supabase database.",
+          details: rpcErr.message 
+        }, 500);
+      }
+      return json({ 
+        error: `admin_create_driver failed: ${rpcErr.message}`,
+        details: rpcErr
+      }, 500);
     }
     
     console.log("✓ Driver created successfully");
