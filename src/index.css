@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Focus styles */
+*:focus {
+  outline: none;
+}
+
+/* Improved form controls */
+input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 2px #2EC4B6;
+}
+
+input[type="radio"]:focus {
+  box-shadow: 0 0 0 2px #2EC4B6;
+}
+
+/* Loading animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Toast customization */
+.react-hot-toast > div {
+  border-radius: 8px !important;
+}
+
+/* Better table hover */
+tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Better focus outline for tables */
+tbody tr:focus-within {
+  outline: 2px solid #2EC4B6;
+  outline-offset: -2px;
+}
+
+/* Card hover effects */
+.card-hover:hover {
+  box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Status indicators */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.status-online {
+  background-color: #10b981;
+}
+
+.status-offline {
+  background-color: #6b7280;
+}
+
+.status-busy {
+  background-color: #f59e0b;
+}
