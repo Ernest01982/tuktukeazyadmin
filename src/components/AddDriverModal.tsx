@@ -68,8 +68,12 @@ export const AddDriverModal: React.FC<AddDriverModalProps> = ({ isOpen, onClose,
     }
   };
 
-  const updateForm = (field: string, value: string) => {
-    setForm(prev => ({ ...prev, [field]: value }));
+  const updateForm = (field: string, value: string | boolean) => {
+    const normalized =
+      value === 'true' ? true :
+      value === 'false' ? false :
+      value;
+    setForm(prev => ({ ...prev, [field]: normalized }));
   };
 
   return (
@@ -145,7 +149,7 @@ export const AddDriverModal: React.FC<AddDriverModalProps> = ({ isOpen, onClose,
             type="checkbox"
             id="is_verified"
             checked={form.is_verified}
-            onChange={(e) => updateForm('is_verified', e.target.checked.toString())}
+            onChange={(e) => updateForm('is_verified', e.target.checked)}
             className="mr-2"
           />
           <label htmlFor="is_verified" className="text-sm text-gray-700">
@@ -164,8 +168,4 @@ export const AddDriverModal: React.FC<AddDriverModalProps> = ({ isOpen, onClose,
       </form>
     </Modal>
   );
-};
-
-const updateForm = (field: string, value: string) => {
-  setForm(prev => ({ ...prev, [field]: value === 'true' ? true : value === 'false' ? false : value }));
 };
