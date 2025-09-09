@@ -38,16 +38,6 @@ export const RidesPage: React.FC = () => {
   const pageSize = 20;
 
   const queryClient = useQueryClient();
-
-  // Summary statistics
-  const summaryData = React.useMemo(() => {
-    if (!ridesData) return null;
-    const requested = ridesData.rides.filter(r => r.status === 'REQUESTED').length;
-    const unassigned = ridesData.rides.filter(r => !r.driver_id).length;
-    const active = ridesData.rides.filter(r => ['ASSIGNED', 'ENROUTE', 'STARTED'].includes(r.status)).length;
-    return { requested, unassigned, active };
-  }, [ridesData]);
-
   const { data: ridesData, isLoading } = useQuery({
     queryKey: ['rides', searchTerm, statusFilter, unassignedOnly, currentPage],
     queryFn: async (): Promise<{ rides: RideWithRelations[]; total: number }> => {
@@ -85,6 +75,15 @@ export const RidesPage: React.FC = () => {
       };
     },
   });
+
+  // Summary statistics
+  const summaryData = React.useMemo(() => {
+    if (!ridesData) return null;
+    const requested = ridesData.rides.filter(r => r.status === 'REQUESTED').length;
+    const unassigned = ridesData.rides.filter(r => !r.driver_id).length;
+    const active = ridesData.rides.filter(r => ['ASSIGNED', 'ENROUTE', 'STARTED'].includes(r.status)).length;
+    return { requested, unassigned, active };
+  }, [ridesData]);
 
   const assignDriverMutation = useMutation({
     mutationFn: async ({ rideId, driverId }: { rideId: string; driverId: string }) => {
