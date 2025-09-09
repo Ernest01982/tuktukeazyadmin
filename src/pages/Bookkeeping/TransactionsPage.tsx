@@ -2,8 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getEntriesForTxn, getTotalsForTxns, listAccounts, listLedgerTransactions } from '../../lib/api';
 import { Layout } from '../../components/ui/Layout';
-import type { UUID, LedgerTransaction, LedgerEntry, Account } from '../../lib/types';
-import toast from 'react-hot-toast';
+import type { UUID, LedgerEntry, Account } from '../../lib/types';
 
 export default function TransactionsPage() {
   const [page, setPage] = useState(0);
