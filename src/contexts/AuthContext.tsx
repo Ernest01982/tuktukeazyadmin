@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import toast from 'react-hot-toast';
+import { Session, User } from '@supabase/supabase-js';
 
 type Profile = { id: string; email: string | null; role: 'rider'|'driver'|'admin' };
 type Ctx = {
-  user: any | null;
-  session: any | null;
+  user: User | null;
+  session: Session | null;
   profile: Profile | null;
   loading: boolean;
   isAdmin: boolean;
@@ -13,21 +14,21 @@ type Ctx = {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 };
-const AuthContext = createContext<Ctx>({} as any);
+const AuthContext = createContext<Ctx>({} as Ctx);
 export const useAuth = () => useContext(AuthContext);
 
 const ADMIN_LIST = (import.meta.env.VITE_ADMIN_EMAILS || '')
   .split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<any>(null);
-  const [user, setUser] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Boot once
   useEffect(() => {
-    let unsub: any;
+    let unsub: { unsubscribe: () => void } | undefined;
     (async () => {
       const { data } = await supabase.auth.getSession();
       setSession(data.session);
@@ -42,10 +43,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         else setProfile(null);
       }).data.subscription;
     })();
-    return () => { try { unsub?.unsubscribe(); } catch {} };
+    return () => { try { unsub?.unsubscribe(); } catch { /* ignore */ } };
   }, []);
 
-  const ensureProfile = async (u: any) => {
+  const ensureProfile = async (u: User) => {
     try {
       const email = (u.email || '').toLowerCase();
       
@@ -86,7 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Set a minimal profile for client-side use
         setProfile({ id: u.id, email, role: 'rider' });
       }
-    } catch (e:any) {
+    } catch (e: unknown) {
       console.error('profile bootstrap failed', e);
       // Don't show toast error for profile issues, just set minimal profile
       setProfile({ id: u.id, email: (u.email || '').toLowerCase(), role: 'rider' });
